@@ -1,15 +1,42 @@
-<img src=".assets/microscope.jpg" alt="Microscopio de tres cuerpos para las observaciones simultáneas" style="width: 400px;" align="right">
+# unravel
 
-# `unravel`
-🔬 Unravel 🔬
+System discovery CLI for the [Amadla](https://github.com/AmadlaOrg) ecosystem. Discovers existing system state and outputs it as HERY entities.
 
-## ©️ Copyright
-- "<a rel="noopener noreferrer" href="https://www.flickr.com/photos/37667416@N04/4052593758">&#039;Microscopio de tres cuerpos para las observaciones simultáneas&#039;.</a>" by <a rel="noopener noreferrer" href="https://www.flickr.com/photos/37667416@N04">Biblioteca Rector Machado y Nuñez</a> is marked with <a rel="noopener noreferrer" href="https://creativecommons.org/publicdomain/mark/1.0/?ref=openverse">Public Domain Mark 1.0 <img src="https://mirrors.creativecommons.org/presskit/icons/pd.svg" style="height: 1em; margin-right: 0.125em; display: inline;" /></a>.
+## Usage
 
-## :scroll: License
+```bash
+# Discover all system state (runs all unravel-* plugins)
+unravel discover
 
-The license for the code and documentation can be found in the [LICENSE](./LICENSE) file.
+# Discover from a specific plugin
+unravel discover --from system
 
----
+# Filter to a specific entity type
+unravel discover --type network
 
-Made in Québec 🏴󠁣󠁡󠁱󠁣󠁿, Canada 🇨🇦!
+# Drift detection pipeline
+unravel discover | judge audit
+
+# List discovered plugins
+unravel plugins
+```
+
+## Plugin Protocol
+
+Unravel discovers `unravel-*` binaries on PATH. Each plugin implements:
+
+- `info` — JSON metadata (name, version, backend, description, supports)
+- `discover` — outputs HERY entities as JSON to stdout
+- `discover --type <entity-type>` — filtered discovery
+
+Exit codes: `0` success, `1` failure, `2` usage error. Data to stdout, diagnostics to stderr.
+
+## Design
+
+- **Stateless** — no daemon, no caching. Discovers and outputs.
+- **UNIX philosophy** — pipe output to files, judge, lighthouse, or any tool.
+- **Plugin-based** — `unravel-*` plugins extend discovery to new backends.
+
+## License
+
+MIT
